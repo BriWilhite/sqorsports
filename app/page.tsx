@@ -1,39 +1,81 @@
+"use client"
+
+import { useState } from "react"
+
+const servers = [
+  {
+    id: "sqorsports",
+    name: "SqorSports",
+    short: "S",
+    color: "bg-gradient-to-br from-indigo-500 to-purple-600",
+    channels: ["announcements", "schedule", "carpool", "general", "parents-only"],
+  },
+  {
+    id: "teamsnap",
+    name: "TeamSnap",
+    short: "TS",
+    color: "bg-[#00a8e8]",
+    channels: ["announcements", "schedule", "carpool", "general", "parents-only"],
+  },
+  {
+    id: "sportsyou",
+    name: "SportsYou",
+    short: "SY",
+    color: "bg-[#7c3aed]",
+    channels: ["announcements", "schedule", "chat", "general"],
+  },
+  {
+    id: "remind",
+    name: "Remind",
+    short: "RE",
+    color: "bg-[#3b82f6]",
+    channels: ["announcements", "class-updates", "general"],
+  },
+  {
+    id: "sprocket",
+    name: "Sprocket Sports",
+    short: "SP",
+    color: "bg-[#10b981]",
+    channels: ["announcements", "schedule", "photos", "general"],
+  },
+  {
+    id: "hudl",
+    name: "Hudl",
+    short: "HU",
+    color: "bg-[#ff6b00]",
+    channels: ["announcements", "film-review", "schedule", "general"],
+  },
+]
+
 export default function Home() {
+  const [activeServerId, setActiveServerId] = useState("teamsnap")
+  const [activeChannel, setActiveChannel] = useState("general")
+
+  const activeServer = servers.find((s) => s.id === activeServerId) || servers[1]
+
   return (
     <div className="flex h-screen bg-[#1e1f22] text-gray-100 overflow-hidden">
       {/* Servers Sidebar */}
       <div className="w-[72px] bg-[#111214] flex flex-col items-center py-3 space-y-2 flex-shrink-0">
-        {/* SqorSports Home */}
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-black cursor-pointer hover:rounded-xl transition-all duration-200 shadow-lg">
-          S
-        </div>
-
-        <div className="w-8 h-[2px] bg-gray-700 rounded-full my-1"></div>
-
-        {/* TeamSnap */}
-        <div className="w-12 h-12 rounded-full bg-[#00a8e8] flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:rounded-2xl transition-all duration-200 shadow-md" title="TeamSnap">
-          TS
-        </div>
-
-        {/* SportsYou */}
-        <div className="w-12 h-12 rounded-full bg-[#7c3aed] flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:rounded-2xl transition-all duration-200 shadow-md" title="SportsYou">
-          SY
-        </div>
-
-        {/* Remind */}
-        <div className="w-12 h-12 rounded-full bg-[#3b82f6] flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:rounded-2xl transition-all duration-200 shadow-md" title="Remind">
-          RE
-        </div>
-
-        {/* Sprocket */}
-        <div className="w-12 h-12 rounded-full bg-[#10b981] flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:rounded-2xl transition-all duration-200 shadow-md" title="Sprocket Sports">
-          SP
-        </div>
-
-        {/* Hudl */}
-        <div className="w-12 h-12 rounded-full bg-[#ff6b00] flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:rounded-2xl transition-all duration-200 shadow-md" title="Hudl">
-          HU
-        </div>
+        {servers.map((server) => (
+          <div
+            key={server.id}
+            onClick={() => {
+              setActiveServerId(server.id)
+              setActiveChannel("general")
+            }}
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-all duration-200 shadow-md ${
+              server.color
+            } ${
+              activeServerId === server.id
+                ? "rounded-2xl ring-2 ring-white ring-offset-2 ring-offset-[#111214]"
+                : "hover:rounded-2xl"
+            }`}
+            title={server.name}
+          >
+            {server.short}
+          </div>
+        ))}
 
         {/* Add Server */}
         <div className="w-12 h-12 rounded-full bg-[#1e1f22] border-2 border-dashed border-gray-600 flex items-center justify-center text-2xl text-green-500 cursor-pointer hover:rounded-2xl hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200">
@@ -47,7 +89,7 @@ export default function Home() {
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-bold">
             SqorSports
           </span>
-          <span className="ml-2 text-gray-400 text-sm">• TeamSnap</span>
+          <span className="ml-2 text-gray-400 text-sm">• {activeServer.name}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-3">
@@ -56,26 +98,20 @@ export default function Home() {
           </div>
 
           <div className="space-y-0.5">
-            <div className="flex items-center px-2 py-1.5 rounded hover:bg-[#35373c] cursor-pointer text-gray-300 group">
-              <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
-              announcements
-            </div>
-            <div className="flex items-center px-2 py-1.5 rounded hover:bg-[#35373c] cursor-pointer text-gray-300 group">
-              <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
-              schedule
-            </div>
-            <div className="flex items-center px-2 py-1.5 rounded hover:bg-[#35373c] cursor-pointer text-gray-300 group">
-              <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
-              carpool
-            </div>
-            <div className="flex items-center px-2 py-1.5 rounded bg-[#35373c] cursor-pointer text-white">
-              <span className="text-gray-400 mr-1.5">#</span>
-              general
-            </div>
-            <div className="flex items-center px-2 py-1.5 rounded hover:bg-[#35373c] cursor-pointer text-gray-300 group">
-              <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
-              parents-only
-            </div>
+            {activeServer.channels.map((channel) => (
+              <div
+                key={channel}
+                onClick={() => setActiveChannel(channel)}
+                className={`flex items-center px-2 py-1.5 rounded cursor-pointer group ${
+                  activeChannel === channel
+                    ? "bg-[#35373c] text-white"
+                    : "hover:bg-[#35373c] text-gray-300"
+                }`}
+              >
+                <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
+                {channel}
+              </div>
+            ))}
           </div>
 
           <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-2 mb-2 mt-5">
@@ -106,8 +142,8 @@ export default function Home() {
         {/* Channel header */}
         <div className="h-12 px-4 flex items-center border-b border-[#1e1f22] shadow-sm gap-2">
           <span className="text-gray-400 text-xl">#</span>
-          <span className="font-semibold text-white">general</span>
-          <span className="text-gray-500 text-sm ml-2">• Team chat for parents</span>
+          <span className="font-semibold text-white">{activeChannel}</span>
+          <span className="text-gray-500 text-sm ml-2">• {activeServer.name}</span>
         </div>
 
         {/* Messages */}
@@ -118,7 +154,6 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Message 1 */}
           <div className="flex gap-3 hover:bg-[#2e3035] -mx-2 px-2 py-1 rounded">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
               B
@@ -129,12 +164,11 @@ export default function Home() {
                 <span className="text-xs text-gray-500">10:30 AM</span>
               </div>
               <p className="text-gray-100 mt-0.5">
-                Practice is at 5:30pm tomorrow on Field 3. Please arrive 10 minutes early.
+                Welcome to the {activeServer.name} server. This is the #{activeChannel} channel.
               </p>
             </div>
           </div>
 
-          {/* Message 2 */}
           <div className="flex gap-3 hover:bg-[#2e3035] -mx-2 px-2 py-1 rounded">
             <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
               E
@@ -145,23 +179,7 @@ export default function Home() {
                 <span className="text-xs text-gray-500">10:42 AM</span>
               </div>
               <p className="text-gray-100 mt-0.5">
-                Got it. I can take 3 extra kids if anyone needs a ride.
-              </p>
-            </div>
-          </div>
-
-          {/* Message 3 */}
-          <div className="flex gap-3 hover:bg-[#2e3035] -mx-2 px-2 py-1 rounded">
-            <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
-              C
-            </div>
-            <div>
-              <div className="flex items-baseline gap-2">
-                <span className="font-medium text-orange-300">Coach Jen</span>
-                <span className="text-xs text-gray-500">11:05 AM</span>
-              </div>
-              <p className="text-gray-100 mt-0.5">
-                Thanks Emaleigh! Also reminder — new game jerseys will be handed out at practice.
+                Looking forward to using SqorSports instead of jumping between all the apps.
               </p>
             </div>
           </div>
@@ -172,7 +190,7 @@ export default function Home() {
           <div className="bg-[#383a40] rounded-xl px-4 py-3 flex items-center gap-3">
             <input
               type="text"
-              placeholder="Message #general"
+              placeholder={`Message #${activeChannel}`}
               className="bg-transparent w-full text-sm focus:outline-none placeholder-gray-500 text-gray-100"
             />
           </div>
