@@ -30,13 +30,11 @@ export default function Home() {
       const { data: serversData } = await supabase
         .from("servers")
         .select("*")
-        .order("sort_order")
-
+        
       const { data: channelsData } = await supabase
         .from("channels")
         .select("*")
-        .order("sort_order")
-
+        
       if (serversData) {
         setServers(serversData)
         if (serversData.length > 0) {
