@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { supabase } from "../lib/supabase"
+import { supabase } from "../lib/supabase" 
+console.log('Supabase URL being used:', supabase)
 
 type Server = {
   id: string
