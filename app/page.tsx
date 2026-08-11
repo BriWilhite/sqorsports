@@ -1,57 +1,69 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "../lib/supabase"
 
-const servers = [
-  {
-    id: "sqorsports",
-    name: "SqorSports",
-    short: "S",
-    color: "bg-gradient-to-br from-indigo-500 to-purple-600",
-    channels: ["announcements", "schedule", "carpool", "general", "parents-only"],
-  },
-  {
-    id: "teamsnap",
-    name: "TeamSnap",
-    short: "TS",
-    color: "bg-[#00a8e8]",
-    channels: ["announcements", "schedule", "carpool", "general", "parents-only"],
-  },
-  {
-    id: "sportsyou",
-    name: "SportsYou",
-    short: "SY",
-    color: "bg-[#7c3aed]",
-    channels: ["announcements", "schedule", "chat", "general"],
-  },
-  {
-    id: "remind",
-    name: "Remind",
-    short: "RE",
-    color: "bg-[#3b82f6]",
-    channels: ["announcements", "class-updates", "general"],
-  },
-  {
-    id: "sprocket",
-    name: "Sprocket Sports",
-    short: "SP",
-    color: "bg-[#10b981]",
-    channels: ["announcements", "schedule", "photos", "general"],
-  },
-  {
-    id: "hudl",
-    name: "Hudl",
-    short: "HU",
-    color: "bg-[#ff6b00]",
-    channels: ["announcements", "film-review", "schedule", "general"],
-  },
-]
+type Server = {
+  id: string
+  name: string
+  short_name: string
+  color: string
+  sort_order: number
+}
+
+type Channel = {
+  id: string
+  server_id: string
+  name: string
+  sort_order: number
+}
 
 export default function Home() {
-  const [activeServerId, setActiveServerId] = useState("teamsnap")
-  const [activeChannel, setActiveChannel] = useState("general")
+  const [servers, setServers] = useState<Server[]>([])
+  const [channels, setChannels] = useState<Channel[]>([])
+  const [activeServerId, setActiveServerId] = useState<string>("")
+  const [activeChannel, setActiveChannel] = useState<string>("general")
+  const [loading, setLoading] = useState(true)
 
-  const activeServer = servers.find((s) => s.id === activeServerId) || servers[1]
+  useEffect(() => {
+    async function loadData() {
+      const { data: serversData } = await supabase
+        .from("servers")
+        .select("*")
+        .order("sort_order")
+
+      const { data: channelsData } = await supabase
+        .from("channels")
+        .select("*")
+        .order("sort_order")
+
+      if (serversData) {
+        setServers(serversData)
+        if (serversData.length > 0) {
+          setActiveServerId(serversData[0].id)
+        }
+      }
+
+      if (channelsData) {
+        setChannels(channelsData)
+      }
+
+      setLoading(false)
+    }
+
+    loadData()
+  }, [])
+
+  const activeServer = servers.find((s) => s.id === activeServerId)
+  const activeChannels = channels.filter((c) => c.server_id === activeServerId)
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-[#1e1f22] text-white items-center justify-center">
+        Loading SqorSports...
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-screen bg-[#1e1f22] text-gray-100 overflow-hidden">
@@ -65,19 +77,17 @@ export default function Home() {
               setActiveChannel("general")
             }}
             className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-all duration-200 shadow-md ${
-              server.color
-            } ${
               activeServerId === server.id
                 ? "rounded-2xl ring-2 ring-white ring-offset-2 ring-offset-[#111214]"
                 : "hover:rounded-2xl"
             }`}
+            style={{ backgroundColor: server.color }}
             title={server.name}
           >
-            {server.short}
+            {server.short_name}
           </div>
         ))}
 
-        {/* Add Server */}
         <div className="w-12 h-12 rounded-full bg-[#1e1f22] border-2 border-dashed border-gray-600 flex items-center justify-center text-2xl text-green-500 cursor-pointer hover:rounded-2xl hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200">
           +
         </div>
@@ -89,7 +99,9 @@ export default function Home() {
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-bold">
             SqorSports
           </span>
-          <span className="ml-2 text-gray-400 text-sm">• {activeServer.name}</span>
+          <span className="ml-2 text-gray-400 text-sm">
+            • {activeServer?.name || ""}
+          </span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-3">
@@ -98,34 +110,23 @@ export default function Home() {
           </div>
 
           <div className="space-y-0.5">
-            {activeServer.channels.map((channel) => (
+            {activeChannels.map((channel) => (
               <div
-                key={channel}
-                onClick={() => setActiveChannel(channel)}
+                key={channel.id}
+                onClick={() => setActiveChannel(channel.name)}
                 className={`flex items-center px-2 py-1.5 rounded cursor-pointer group ${
-                  activeChannel === channel
+                  activeChannel === channel.name
                     ? "bg-[#35373c] text-white"
                     : "hover:bg-[#35373c] text-gray-300"
                 }`}
               >
-                <span className="text-gray-500 mr-1.5 group-hover:text-gray-300">#</span>
-                {channel}
+                <span className="text-gray-500 mr-1.5">#</span>
+                {channel.name}
               </div>
             ))}
           </div>
-
-          <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-2 mb-2 mt-5">
-            Events
-          </div>
-          <div className="space-y-0.5">
-            <div className="flex items-center px-2 py-1.5 rounded hover:bg-[#35373c] cursor-pointer text-gray-300">
-              <span className="mr-1.5">📅</span>
-              Upcoming
-            </div>
-          </div>
         </div>
 
-        {/* User area */}
         <div className="h-14 bg-[#232428] px-3 flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold">
             B
@@ -139,18 +140,18 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-[#313338] min-w-0">
-        {/* Channel header */}
         <div className="h-12 px-4 flex items-center border-b border-[#1e1f22] shadow-sm gap-2">
           <span className="text-gray-400 text-xl">#</span>
           <span className="font-semibold text-white">{activeChannel}</span>
-          <span className="text-gray-500 text-sm ml-2">• {activeServer.name}</span>
+          <span className="text-gray-500 text-sm ml-2">
+            • {activeServer?.name}
+          </span>
         </div>
 
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-5">
           <div className="flex justify-center">
             <span className="text-xs text-gray-500 bg-[#2b2d31] px-3 py-1 rounded-full">
-              August 10, 2026
+              Connected to Supabase
             </span>
           </div>
 
@@ -161,31 +162,15 @@ export default function Home() {
             <div>
               <div className="flex items-baseline gap-2">
                 <span className="font-medium text-indigo-300">Brian</span>
-                <span className="text-xs text-gray-500">10:30 AM</span>
+                <span className="text-xs text-gray-500">Just now</span>
               </div>
               <p className="text-gray-100 mt-0.5">
-                Welcome to the {activeServer.name} server. This is the #{activeChannel} channel.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-3 hover:bg-[#2e3035] -mx-2 px-2 py-1 rounded">
-            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
-              E
-            </div>
-            <div>
-              <div className="flex items-baseline gap-2">
-                <span className="font-medium text-emerald-300">Emaleigh</span>
-                <span className="text-xs text-gray-500">10:42 AM</span>
-              </div>
-              <p className="text-gray-100 mt-0.5">
-                Looking forward to using SqorSports instead of jumping between all the apps.
+                Servers and channels are now loading from the real database.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Message input */}
         <div className="p-4">
           <div className="bg-[#383a40] rounded-xl px-4 py-3 flex items-center gap-3">
             <input
