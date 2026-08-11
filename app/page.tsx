@@ -17,8 +17,8 @@ type Channel = {
   sort_order: number
 }
 
-const SUPABASE_URL = "https://cvrzieobtvakfiqgouhw.supabase.co"
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2cnppZW9idHZha2ZpcXFvdWh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYzNjkyMjcsImV4cCI6MjAyMjIxMjgzMH0.KXZhfVlY68C9Tuxd54ELhvmn_NhQBX25iw8taEflj3A"
+const SUPABASE_URL = "https://cyluqscjobfjtbxxofyp.supabase.co"
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bHVxc2Npb2JmanRieHhvZnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NzM4MTYsImV4cCI6MjEwMjA0OTgxNn0.NHeeqGGDQ7AqNGUjXY_i47ULed7J0MMJTgc-nDYeQVM"
 
 export default function Home() {
   const [servers, setServers] = useState<Server[]>([])
@@ -30,18 +30,18 @@ export default function Home() {
   useEffect(() => {
     async function loadData() {
       try {
-        const serversRes = await fetch(SUPABASE_URL + "/rest/v1/servers?select=*", {
+        const serversRes = await fetch(`${SUPABASE_URL}/rest/v1/servers?select=*`, {
           headers: {
             apikey: SUPABASE_ANON_KEY,
-            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           },
         })
         const serversData = await serversRes.json()
 
-        const channelsRes = await fetch(SUPABASE_URL + "/rest/v1/channels?select=*", {
+        const channelsRes = await fetch(`${SUPABASE_URL}/rest/v1/channels?select=*`, {
           headers: {
             apikey: SUPABASE_ANON_KEY,
-            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
           },
         })
         const channelsData = await channelsRes.json()
@@ -79,6 +79,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen bg-[#1e1f22] text-gray-100 overflow-hidden">
+      {/* Servers Sidebar */}
       <div className="w-[72px] bg-[#111214] flex flex-col items-center py-3 space-y-2 flex-shrink-0">
         {servers.map((server) => (
           <div
@@ -99,6 +100,7 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Channels */}
       <div className="w-60 bg-[#2b2d31] flex flex-col">
         <div className="px-4 py-3 border-b border-[#1e1f22] font-semibold">
           {activeServer?.name || "SqorSports"}
@@ -119,6 +121,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Main content */}
       <div className="flex-1 flex flex-col">
         <div className="h-12 border-b border-[#1e1f22] flex items-center px-4">
           # {activeChannel}
