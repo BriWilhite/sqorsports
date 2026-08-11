@@ -16,9 +16,8 @@ type Channel = {
   name: string
   sort_order: number
 }
-
-const SUPABASE_URL = "https://cyluqscjobfjtbxxofyp.supabase.co"
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bHVxc2Npb2JmanRieHhvZnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NzM4MTYsImV4cCI6MjEwMjA0OTgxNn0.NHeeqGGDQ7AqNGUjXY_i47ULed7J0MMJTgc-nDYeQVM"
+const SUPABASE_URL = "https://pjifexeqrycpmumsuimk.supabase.co"
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqaWZleGVxcnljcG11bXN1aW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0ODI4ODEsImV4cCI6MjEwMjA1ODg4MX0.mPXFp4jRp-DwICSFQeveP6KVpIAjCgeWZhwGbqP5o0o"
 
 export default function Home() {
   const [servers, setServers] = useState<Server[]>([])
