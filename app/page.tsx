@@ -409,12 +409,44 @@ export default function Home() {
   </p>
 </div>
             {events.map((ev) => (
-              <div key={ev.id} className="bg-[#404249] p-3 rounded-lg">
-                <div className="font-medium">{ev.title}</div>
-                <div className="text-sm text-gray-400">{new Date(ev.start_time).toLocaleString()}</div>
-                {ev.location && <div className="text-sm text-gray-400">{ev.location}</div>}
-              </div>
-            ))}
+  <div key={ev.id} className="bg-[#404249] p-3 rounded-lg">
+    <div className="font-medium">{ev.title}</div>
+    <div className="text-sm text-gray-400">{new Date(ev.start_time).toLocaleString()}</div>
+    {ev.location && <div className="text-sm text-gray-400">{ev.location}</div>}
+    
+    <button
+      onClick={() => {
+        const start = new Date(ev.start_time)
+        const end = ev.end_time ? new Date(ev.end_time) : new Date(start.getTime() + 60 * 60 * 1000)
+        
+        const formatDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"
+        
+        const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:${ev.id}@sqorsports.com
+DTSTART:${formatDate(start)}
+DTEND:${formatDate(end)}
+SUMMARY:${ev.title}
+DESCRIPTION:${ev.description || ""}
+LOCATION:${ev.location || ""}
+END:VEVENT
+END:VCALENDAR`
+
+        const blob = new Blob([ics], { type: "text/calendar" })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = `${ev.title || "event"}.ics`
+        a.click()
+        URL.revokeObjectURL(url)
+      }}
+      className="mt-2 text-xs bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded"
+    >
+      Add to Calendar
+    </button>
+  </div>
+))}
           </div>
         )}
 
