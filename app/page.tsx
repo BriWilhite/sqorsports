@@ -391,6 +391,23 @@ export default function Home() {
               <input type="text" placeholder="Location (optional)" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full bg-[#404249] px-3 py-2 rounded text-sm" />
               <button type="submit" className="w-full bg-indigo-600 py-2 rounded text-sm">Add Event</button>
             </form>
+<div className="mt-6 p-3 bg-[#1e1f22] rounded-lg text-sm">
+  <p className="font-medium mb-2">Subscribe to Calendar</p>
+  <p className="text-gray-400 text-xs mb-2">
+    Copy this link and add it to your iPhone or Android calendar:
+  </p>
+  <input
+    type="text"
+    readOnly
+    value={typeof window !== "undefined" ? `${window.location.origin}/api/calendar` : "https://sqorsports.com/api/calendar"}
+    className="w-full bg-[#404249] px-2 py-1 rounded text-xs mb-2"
+    onClick={(e) => (e.target as HTMLInputElement).select()}
+  />
+  <p className="text-gray-500 text-xs">
+    iPhone: Settings → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar<br/>
+    Android: Open Google Calendar → + → From URL
+  </p>
+</div>
             {events.map((ev) => (
               <div key={ev.id} className="bg-[#404249] p-3 rounded-lg">
                 <div className="font-medium">{ev.title}</div>
