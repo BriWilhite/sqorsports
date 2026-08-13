@@ -231,7 +231,7 @@ export default function Home() {
         Prefer: "return=representation",
       },
       body: JSON.stringify({
-        user_email: user.email,
+        user_email: user!.email,
         app_name: newAppName,
         link_url: newAppLink || null,
         notes: newAppNotes || null,
