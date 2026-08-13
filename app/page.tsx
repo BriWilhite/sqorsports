@@ -109,7 +109,7 @@ export default function Home() {
     if (!user) return
     async function loadConnectedApps() {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/connected_apps?user_email=eq.${user.email}&select=*`,
+        `${SUPABASE_URL}/rest/v1/connected_apps?user_email=eq.${user!.email}&select=*`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
       )
       const data = await res.json()
@@ -208,7 +208,7 @@ export default function Home() {
       body: JSON.stringify({
         channel_id: activeChannelId,
         content: newMessage.trim(),
-        user_name: user.name,
+        user_name: user!.name,
       }),
     })
     if (res.ok) {
